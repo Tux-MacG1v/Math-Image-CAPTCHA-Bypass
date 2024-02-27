@@ -8,16 +8,16 @@ from bs4 import BeautifulSoup
 from PIL import Image, ImageEnhance, ImageFilter
 from playwright.sync_api import Playwright, sync_playwright
 from io import BytesIO
+
 def generate_random_string(length, chars=string.ascii_letters + string.digits):
     return ''.join(random.choice(chars) for _ in range(length))
-
-
-api_address = "https://api.mail.tm"
+    
 def generate_random_username():
     username = ''.join(random.choices(string.ascii_lowercase, k=10))
     return username
 
 def generate_random_email(username):
+    api_address = "https://api.mail.tm"
     domains = requests.get(f"{api_address}/domains").json()["hydra:member"]
     domain = random.choice(domains)["domain"]
     return f"{username}@{domain}"
@@ -81,7 +81,6 @@ def run(playwright: Playwright) -> None:
     time.sleep(5)
     captcha_input_locator = "input[name=\"image_string\"]"
     fill_input_slowly(page, captcha_input_locator, captcha_text)
-
     #page.frame_locator("#signup_popup_text iframe").locator("input[name=\"image_string\"]").fill(captcha_text)
     time.sleep(0.2)
     page.frame_locator("#signup_popup_text iframe").locator("input[name=\"agreement\"]").check()
@@ -109,7 +108,7 @@ def run(playwright: Playwright) -> None:
         print("Balance: 0")
         open('Used.txt', "a").write(
             f"Username: {ran_user}  \nUsermail: {ran_email} \nPassword: {ran_pass} \nKEY: {key} \nBalance: 0 \n ")
-
+        
     time.sleep(10)
     context.close()
     browser.close()
@@ -158,8 +157,6 @@ def solve_captcha(image_path: str) -> float | int | None | str:
     except Exception as e:
         print("Error :", e)
         return ""
-
-
 
 with sync_playwright() as playwright:
     while True:
